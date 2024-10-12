@@ -14,7 +14,6 @@ exports.getEmployees = async (req, res) => {
 
 
 exports.createEmployee = [
-    // Validation and Sanitization
     body('first_name').notEmpty().trim().escape(),
     body('last_name').notEmpty().trim().escape(),
     body('email').isEmail().normalizeEmail(),
@@ -24,20 +23,17 @@ exports.createEmployee = [
     body('department').notEmpty().trim().escape(),
 
     async (req, res) => {
-        // Handle Validation Errors
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
 
         try {
-            // Check if Employee Exists
             let employee = await Employee.findOne({ email: req.body.email });
             if (employee) {
                 return res.status(400).json({ message: 'Employee already exists.' });
             }
 
-            // Create New Employee
             employee = new Employee(req.body);
             await employee.save();
 
@@ -71,7 +67,6 @@ exports.getEmployeeById = async (req, res) => {
 
 exports.updateEmployee = async (req, res) => {
     try {
-        // Update Fields
         const updates = req.body;
         updates.updated_at = Date.now();
 
